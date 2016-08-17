@@ -1,4 +1,4 @@
-# sebastienpelletier
+# Sebastien Pelletier
 Source Code for my blog
 
 ### Updates
