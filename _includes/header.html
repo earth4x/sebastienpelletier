@@ -10,7 +10,7 @@
             <h1 class="main-header__title">Sebastien Pelletier</h1>
             <p class="main-header__bio">Hi, I'm the description</p>
 
-            Twitter Github LinkedIn?
+            <i class="icon ion-social-twitter"></i> <i class="icon ion-social-github"></i> <i class="icon ion-social-linkedin"></i> <i class="icon ion-social-rss"></i>
         </section>
 
     </main>
@@ -19,6 +19,13 @@
 
 <nav class="primary-nav">
     <div class="wrapper">
-        <a href="" title="Home">Home</a>
+        <a href="/" title="All Posts">All Posts</a>
+        {% for category in site.categories %}
+            <a href="/category/{{ category | first }}" title="{{ category | first }}">{{ category | first }}</a>
+        {% endfor %}
+        <a href="/about" title="About">About</a>
+        <a href="/contact" title="Contact">Contact</a>
     </div>
 </nav>
+
+ <!-- {% unless forloop.last %},{% endunless %} -->
