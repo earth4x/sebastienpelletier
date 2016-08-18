@@ -19,12 +19,12 @@
 
 <nav class="primary-nav">
     <div class="wrapper">
-        <a href="/" title="All Posts">All Posts</a>
+        <a href="/" title="All Posts" class="primary-nav__link">All Posts</a>
         {% for category in site.categories %}
-            <a href="/category/{{ category | first }}" title="{{ category | first }}">{{ category | first }}</a>
+            <a href="/category/{{ category | first }}" title="{{ category | first }}" class="primary-nav__link">{{ category | first }}</a>
         {% endfor %}
-        <a href="/about" title="About">About</a>
-        <a href="/contact" title="Contact">Contact</a>
+        <a href="/about" title="About" class="primary-nav__link">About</a>
+        <a href="/contact" title="Contact" class="primary-nav__link">Contact</a>
     </div>
 </nav>
 

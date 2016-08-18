@@ -76,7 +76,7 @@ input[type="search"] {
 
 
 // Set all links style
-a:not([class*="btn"]) {
+a {
     color: $link-color;
     text-decoration: none;
 

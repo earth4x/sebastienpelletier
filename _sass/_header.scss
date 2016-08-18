@@ -21,3 +21,17 @@
     color: brand(scaffold, tertiary);
     margin-left: $gutter-x;
 }
+
+
+
+// Nav
+.primary-nav {
+    background: brand(scaffold, menu);
+    padding: 0.5em 0;
+}
+
+.primary-nav__link {
+    color: brand(scaffold, alternate);
+    font-size: 1.2em;
+    text-transform: capitalize;
+}
