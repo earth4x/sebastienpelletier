@@ -1,4 +1,98 @@
 
+// Resets & Scaffold
+figure {
+    margin: 0;
+}
+
+html {
+    box-sizing: border-box;
+    font-size: $font-size-root;
+    -ms-overflow-style: scrollbar;
+    background-color: $background-color;
+    height: 100%;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+
+
 body {
-    background: $background-color;
+
+    font-family: $font-family-base;
+    font-size: $font-size-base;
+    line-height: $line-height-base;
+
+    color: $grey-color-dark;
+
+    background-color: $background-color;
+
+    min-height: 100%;
+
+}
+
+
+// Suppress the focus outline on elements that cannot be accessed via keyboard
+[tabindex="-1"]:focus {
+    outline: none !important;
+}
+
+
+// Reset the top margin of headings
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    margin-bottom: .5rem;
+}
+
+// Reset the top margin of paragraphs
+p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+
+a,
+area,
+button,
+[role="button"],
+input,
+label,
+select,
+summary,
+textarea {
+    touch-action: manipulation;
+}
+
+
+// Overrides iOS Safari behavior that adds weird quicks to search input
+input[type="search"] {
+    -webkit-appearance: none;
+}
+
+
+
+
+// Set all links style
+a:not([class*="btn"]) {
+    color: $link-color;
+    text-decoration: none;
+
+    @include hover-focus {
+        color: $link-hover;
+    }
+
+    &:focus {
+        @include tab-focus();
+    }
+}
+
+
+// Remove default browser outline for inputs
+input,
+select,
+textarea {
+    outline: none;
 }
