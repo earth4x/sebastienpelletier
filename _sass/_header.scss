@@ -6,22 +6,43 @@
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    background: brand(scaffold, contrast);
-    padding: 0.3em;
+    //background: brand(scaffold, contrast);
+    //padding: 0.3em;
 
-    img {
-        width: 100%;
-        height: 100%;
-        display: block;
-        border-radius: 50%;
+    // img {
+    //     width: 100%;
+    //     height: 100%;
+    //     display: block;
+    //     border-radius: 50%;
+    // }
+
+    background: rgba(255, 255, 255, 0.3);
+
+    .ellipse {
+        fill: rgba(228, 253, 225, 0.4);
+    }
+
+    .letters {
+        fill: white;
     }
 }
 
 .main-header__content {
-    color: brand(scaffold, tertiary);
+    color: white;
     margin-left: $gutter-x;
+
+    a {
+        color: brand(scaffold, contrast);
+    }
 }
 
+.main-header__links {
+    img {
+        width: 20px;
+        height: 20px;
+        fill: white;
+    }
+}
 
 
 // Nav
