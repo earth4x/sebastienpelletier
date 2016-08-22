@@ -1,7 +1,7 @@
 ---
 layout: page
-title: Contact
-permalink: /contact/
+title: About
+permalink: /about/
 ---
 
-This is the contact page
+This is the about page

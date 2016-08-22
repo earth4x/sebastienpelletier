@@ -3,6 +3,7 @@
     <main class="wrapper flex align-center">
 
         <a class="main-header__img" href="" title="Go back to Home">
+
             <svg class="logo" id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
                 <path class="ellipse" d="M100,12a88,88,0,1,1-88,88,88.1,88.1,0,0,1,88-88m0-12A100,100,0,1,0,200,100,100,100,0,0,0,100,0Z"/>
                 <g class="letters" id="letters">
@@ -10,19 +11,27 @@
                     <path d="M105.9,55.9h14.4q13.1,0,18.5,2.3A22.5,22.5,0,0,1,149,66.1,20.6,20.6,0,0,1,152.4,78a23.9,23.9,0,0,1-4,13.5,23.2,23.2,0,0,1-10.8,8.8q-6.8,2.8-22.6,3L110.2,138H94.7Zm10.9,32.9q12.5-.1,16.4-2.6a8.6,8.6,0,0,0,3.8-7.6,7.7,7.7,0,0,0-1.5-4.8,7.9,7.9,0,0,0-4.4-2.7q-2.9-.8-11.6-.8Z"/>
                 </g>
             </svg>
-            <!-- <img src="{{ site.baseurl }}/img/PhotoSmall.png" alt="seb" /> -->
+
         </a>
 
         <section class="main-header__content" flex>
             <h1 class="main-header__title">Sebastien Pelletier</h1>
-            <p class="main-header__bio">Tech Lead for Front-End Development <a href="http://www.ibwave.com" title="iBwave Solutions">@iBwave</a> <br>Blogging about AngularJS, Javascript, HTML5 & CSS3.</p>
+            <p class="main-header__bio">Tech Lead for Front-End Development <a href="http://www.ibwave.com" title="iBwave Solutions">@iBwave</a> <br>Blogging about Javascript, HTML5, UI Design & more!</p>
         </section>
 
-        <section class="main-header__links">
-            <img src="{{site.baseurl}}/img/social-twitter.svg" alt="" />
-            <img src="{{site.baseurl}}/img/social-github.svg" alt="" />
-            <img src="{{site.baseurl}}/img/social-linkedin.svg" alt="" />
-            <img src="{{site.baseurl}}/img/social-rss.svg" alt="" />
+        <section class="flex">
+            <a href="" class="main-header__link">
+                <svg class="icon"><use xlink:href="{{site.baseurl}}/img/sprite.svg#icon-twitter"></use></svg>
+            </a>
+            <a href="" class="main-header__link">
+                <svg class="icon"><use xlink:href="{{site.baseurl}}/img/sprite.svg#icon-github"></use></svg>
+            </a>
+            <a href="" class="main-header__link">
+                <svg class="icon"><use xlink:href="{{site.baseurl}}/img/sprite.svg#icon-linkedin"></use></svg>
+            </a>
+            <a href="" class="main-header__link">
+                <svg class="icon"><use xlink:href="{{site.baseurl}}/img/sprite.svg#icon-rss"></use></svg>
+            </a>
         </section>
 
     </main>
@@ -30,10 +39,10 @@
 </header>
 
 <nav class="primary-nav">
-    <div class="wrapper">
+    <div class="wrapper flex">
         <a href="/" title="All Posts" class="primary-nav__link">All Posts</a>
         {% for category in site.categories %}
-            <a href="/category/{{ category | first }}" title="{{ category | first }}" class="primary-nav__link">{{ category | first }}</a>
+            <a href="/{{ category | first }}" title="{{ category | first }}" class="primary-nav__link">{{ category | first }}</a>
         {% endfor %}
         <a href="/about" title="About" class="primary-nav__link">About</a>
         <a href="/contact" title="Contact" class="primary-nav__link">Contact</a>

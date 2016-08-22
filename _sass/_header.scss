@@ -1,11 +1,13 @@
 .main-header {
     background: brand(scaffold);
+    padding: 0.7em 0;
 }
 
 .main-header__img {
     width: 100px;
     height: 100px;
     border-radius: 50%;
+    box-shadow: 0 2px 2px rgba(0,0,0,0.2);
     //background: brand(scaffold, contrast);
     //padding: 0.3em;
 
@@ -28,18 +30,44 @@
 }
 
 .main-header__content {
-    color: white;
     margin-left: $gutter-x;
 
     a {
         color: brand(scaffold, contrast);
+        &:hover {
+            text-decoration: underline;
+        }
     }
 }
 
-.main-header__links {
-    img {
-        width: 20px;
-        height: 20px;
+.main-header__title {
+    font-family: $font-family-montserrat;
+    font-size: 1.25em;
+    margin: 0;
+    color: white;
+}
+
+.main-header__bio {
+    font-size: 0.9em;
+    font-family: $font-family-base;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.main-header__link {
+
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 50%;
+    padding: 0.35em;
+    display: flex;
+
+    &:not(:first-child) {
+        margin-left: 0.35em;
+    }
+
+    .icon {
+        width: 23px;
+        height: 23px;
         fill: white;
     }
 }
@@ -48,11 +76,20 @@
 // Nav
 .primary-nav {
     background: brand(scaffold, menu);
-    padding: 0.5em 0;
 }
 
 .primary-nav__link {
     color: brand(scaffold, alternate);
-    font-size: 1.2em;
+    font-size: 1em;
     text-transform: capitalize;
+    padding: 0.5em 0;
+    font-weight: 700;
+    font-family: $font-family-montserrat;
+    border-left: 1px solid darken(brand(scaffold, alternate), 8%);
+    text-align: center;
+    flex-grow: 1;
+
+    &:last-child {
+        border-right: 1px solid darken(brand(scaffold, alternate), 8%);
+    }
 }
