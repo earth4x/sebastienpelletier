@@ -76,6 +76,8 @@
 // Nav
 .primary-nav {
     background: brand(scaffold, menu);
+    border-bottom: 1px solid brand(scaffold, menu);
+    border-top: 1px solid darken(brand(scaffold, menu), 2%);
 }
 
 .primary-nav__link {
@@ -85,11 +87,9 @@
     padding: 0.5em 0;
     font-weight: 700;
     font-family: $font-family-montserrat;
-    border-left: 1px solid darken(brand(scaffold, alternate), 8%);
-    text-align: center;
-    flex-grow: 1;
-
-    &:last-child {
-        border-right: 1px solid darken(brand(scaffold, alternate), 8%);
+    // text-align: center;
+    // flex-grow: 1;
+    &:not(:first-child) {
+        margin-left: 4em;
     }
 }

@@ -2,7 +2,7 @@
 
     <main class="wrapper flex align-center">
 
-        <a class="main-header__img" href="" title="Go back to Home">
+        <a class="main-header__img" href="/" title="Go back to Home">
 
             <svg class="logo" id="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
                 <path class="ellipse" d="M100,12a88,88,0,1,1-88,88,88.1,88.1,0,0,1,88-88m0-12A100,100,0,1,0,200,100,100,100,0,0,0,100,0Z"/>
@@ -20,16 +20,16 @@
         </section>
 
         <section class="flex">
-            <a href="" class="main-header__link">
+            <a href="https://twitter.com/sebastpelletier" target="_blank" class="main-header__link">
                 <svg class="icon"><use xlink:href="{{site.baseurl}}/img/sprite.svg#icon-twitter"></use></svg>
             </a>
-            <a href="" class="main-header__link">
+            <a href="https://github.com/sebpelletier" target="_blank" class="main-header__link">
                 <svg class="icon"><use xlink:href="{{site.baseurl}}/img/sprite.svg#icon-github"></use></svg>
             </a>
-            <a href="" class="main-header__link">
+            <a href="https://ca.linkedin.com/in/pelletiersebastien" target="_blank" class="main-header__link">
                 <svg class="icon"><use xlink:href="{{site.baseurl}}/img/sprite.svg#icon-linkedin"></use></svg>
             </a>
-            <a href="" class="main-header__link">
+            <a href="{{ "/feed.xml" | prepend: site.baseurl }}" class="main-header__link">
                 <svg class="icon"><use xlink:href="{{site.baseurl}}/img/sprite.svg#icon-rss"></use></svg>
             </a>
         </section>

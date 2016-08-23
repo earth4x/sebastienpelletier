@@ -1,13 +1,24 @@
 <footer class="main-footer">
 
-    <div class="wrapper">
+    <div class="wrapper text-center">
 
         <main class="main-footer__copyright">
-            &copy; {{ site.time | date: '%Y' }} - Sebastien Pelletier
+            Copyright &copy; {{ site.time | date: '%Y' }} - Sebastien Pelletier
         </main>
 
-        <section class="main-footer__links">
-            
+        <section class="flex justify-center">
+            <a href="https://twitter.com/sebastpelletier" target="_blank" class="main-footer__link">
+                Twitter
+            </a>
+            <a href="https://github.com/sebpelletier" target="_blank" class="main-footer__link">
+                GitHub
+            </a>
+            <a href="https://ca.linkedin.com/in/pelletiersebastien" target="_blank" class="main-footer__link">
+                LinkedIn
+            </a>
+            <a href="{{ "/feed.xml" | prepend: site.baseurl }}" class="main-footer__link">
+                RSS
+            </a>
         </section>
 
     </div>
