@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: default
 ---
 
 <h1 class="page-heading">{{ page.title }}</h1>
@@ -11,26 +11,14 @@ layout: page
 
 
 {% for post in site.categories[page.category] %}
-<div class="post-preview">
-    <a href="{{ post.url | prepend: site.baseurl }}">
-        <h2 class="post-title">
+<article class="post">
+    <h2 class="post__title">
+        <a href="{{ post.url | prepend: site.baseurl }}" class="post__link">
             {{ post.title }}
-        </h2>
-        {% if post.subtitle %}
-        <h3 class="post-subtitle">
-            {{ post.subtitle }}
-        </h3>
-        {% endif %}
-    </a>
-    <p class="post-meta">
-      Posted by
-      {% if post.author %}
-        {{ post.author }}
-      {% else %}
-        {{ site.title }}
-      {% endif %}
-      on {{ post.date | date: "%B %-d, %Y" }}
-    </p>
-</div>
-<hr>
+        </a>
+    </h2>
+    <span class="post__meta">Posted on {{ post.date | date: "%b %-d, %Y" }}</span>
+    <p class="post__content">{{ post.content | strip_html | truncatewords: 30 }}</p>
+  </span>
+</article>
 {% endfor %}
