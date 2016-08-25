@@ -1,9 +1,9 @@
 // Our variables
-$background-color: #FAFAFA;
+$background-color: #F6F5F0;
 
-$grey-color:       #828282;
-$grey-color-light: lighten($grey-color, 40%);
-$grey-color-dark:  darken($grey-color, 25%);
+$grey:       #828282;
+$grey-color-light: lighten($grey, 40%);
+$grey-color-dark:  darken($grey, 25%);
 
 // Width of the content area
 $content-width:    1140px;
