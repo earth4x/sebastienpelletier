@@ -1,6 +1,6 @@
 .main-header {
     background: brand(scaffold);
-    padding: 0.7em 0;
+    padding-top: 0.7em;
 }
 
 .main-header__img {
@@ -18,10 +18,11 @@
     //     border-radius: 50%;
     // }
 
-    background: rgba(255, 255, 255, 0.3);
+    background: #3F4E52;
+    //rgba(255, 255, 255, 0.125);
 
     .ellipse {
-        fill: rgba(228, 253, 225, 0.4);
+        fill: brand(scaffold, contrast);
     }
 
     .letters {
@@ -39,6 +40,10 @@
 
     a {
         color: brand(scaffold, contrast);
+
+        &:hover {
+            color: lighten(brand(scaffold, contrast), 20%);
+        }
     }
 
     @media(max-width: $layout-breakpoint-xs) {
@@ -92,9 +97,8 @@
 
 // Nav
 .primary-nav {
-    background: brand(scaffold, menu);
-    border-bottom: 1px solid brand(scaffold, menu);
-    border-top: 1px solid darken(brand(scaffold, menu), 2%);
+    background: rgba(255, 255, 255, 0.2);
+    margin-top: 0.7em;
 
     .wrapper {
         @media(max-width: 768px) {
@@ -116,7 +120,7 @@
 }
 
 .primary-nav__link {
-    color: brand(scaffold, alternate);
+    color: rgba(255, 255, 255, 0.8);
     font-size: 1.2em;
     text-transform: capitalize;
     padding: 0.5em 0;

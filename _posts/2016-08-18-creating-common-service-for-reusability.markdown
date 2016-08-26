@@ -7,3 +7,13 @@ category: javascript
 ---
 
 This is a very simple post
+
+{% highlight javascript %}
+angular
+    .module('app')
+    .service('myService', MyService);
+
+    function MyService() {
+        console.log('yo');
+    }
+{% endhighlight %}

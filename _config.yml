@@ -8,6 +8,8 @@ url: "http://sebpelletier.github.io" # the base hostname & protocol for your sit
 twitter_username: sebpelletier
 github_username:  sebpelletier
 permalink: /:year/:month/:title
+paginate: 2
+paginate_path: "/page:num/"
 
 sass:
     style: compressed
@@ -17,3 +19,4 @@ markdown: kramdown
 
 gems:
   - jekyll-sitemap
+  - jekyll-paginate
