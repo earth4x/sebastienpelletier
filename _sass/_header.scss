@@ -27,6 +27,11 @@
     .letters {
         fill: white;
     }
+
+    @media(max-width: $layout-breakpoint-xs) {
+        width: 50px;
+        height: 50px;
+    }
 }
 
 .main-header__content {
@@ -35,13 +40,18 @@
     a {
         color: brand(scaffold, contrast);
     }
+
+    @media(max-width: $layout-breakpoint-xs) {
+        font-size: 13px;
+    }
 }
 
 .main-header__title {
-    font-family: $font-family-montserrat;
+    font-family: $font-family-alternate;
     font-size: 1.25em;
     margin: 0;
     color: white;
+    font-weight: 500;
 }
 
 .main-header__bio {
@@ -73,21 +83,45 @@
     }
 }
 
+.main-header__links {
+    @media(max-width: 450px) {
+        flex: 1;
+    }
+}
+
 
 // Nav
 .primary-nav {
     background: brand(scaffold, menu);
     border-bottom: 1px solid brand(scaffold, menu);
     border-top: 1px solid darken(brand(scaffold, menu), 2%);
+
+    .wrapper {
+        @media(max-width: 768px) {
+            justify-content: space-between;
+
+            .primary-nav__link {
+                margin: 0;
+            }
+        }
+
+        @media(max-width: $layout-breakpoint-xs) {
+            flex-direction: column;
+
+            .primary-nav__link {
+                text-align: center;
+            }
+        }
+    }
 }
 
 .primary-nav__link {
     color: brand(scaffold, alternate);
-    font-size: 1em;
+    font-size: 1.2em;
     text-transform: capitalize;
     padding: 0.5em 0;
-    font-weight: 700;
-    font-family: $font-family-montserrat;
+    font-weight: 500;
+    font-family: $font-family-base;
     // text-align: center;
     // flex-grow: 1;
     &:not(:first-child) {

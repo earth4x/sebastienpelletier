@@ -11,7 +11,7 @@ layout: default
 
         <h2 class="post__title"><a class="post__link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title | escape }}</a></h2>
 
-        <span class="post__meta">Posted on {{ post.date | date: "%b %-d, %Y" }}</span>
+        <span class="post__meta">Posted on {{ post.date | date: "%B %-d, %Y" }}</span>
 
         <p class="post__content">{{ post.content | strip_html | truncatewords: 30 }}</p>
 

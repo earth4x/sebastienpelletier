@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "Welcome to Jekyll!"
+title:  "Using color maps in SCSS"
 date:   2016-08-17 09:15:04 -0400
-permalink: /other/fluid-and-responsive-youtube-and-vimeo-videos-with-fluidvids-js/
+permalink: /other/using-color-maps-in-scss/
 category: design
 ---
 You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.

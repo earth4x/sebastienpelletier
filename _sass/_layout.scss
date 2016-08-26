@@ -5,3 +5,16 @@
     margin: 0 auto;
     padding: 0 $gutter-x;
 }
+
+// Hiding on small screens
+@media(max-width: $layout-breakpoint-xs) {
+    .hide-xs {
+        display: none;
+    }
+}
+
+@media(max-width: 450px) {
+    .hide-xxs {
+        display: none;
+    }
+}
