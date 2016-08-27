@@ -121,11 +121,12 @@
 
 .primary-nav__link {
     color: rgba(255, 255, 255, 0.8);
-    font-size: 1.2em;
+    font-size: 1.15em;
     text-transform: capitalize;
     padding: 0.5em 0;
     font-weight: 500;
     font-family: $font-family-base;
+    line-height: 1.7;
     // text-align: center;
     // flex-grow: 1;
     &:not(:first-child) {

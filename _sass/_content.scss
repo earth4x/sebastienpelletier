@@ -14,6 +14,10 @@
     &.single {
         margin-top: 2rem;
     }
+
+    &:first-child {
+        margin-top: 2rem;
+    }
 }
 
 .post__content {
@@ -36,4 +40,42 @@
 .post__content {
     font-family: $font-family-base;
     margin-top: 0.5em;
+}
+
+
+
+
+// Pagination
+.pagination {
+    margin-top: 2rem;
+    background: white;
+    padding: 0.7em;
+    box-shadow: 0 2px #e5e5f0;
+    align-items: center;
+    font-size: 1.1em;
+    border-radius: $border-radius;
+}
+
+.pagination__num {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li + li {
+        margin-left: 0.2em;
+    }
+}
+
+.pagination__icon {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+
+    &.disabled {
+        opacity: 0.4;
+    }
+}
+
+.pagination__nav {
+    color: brand(scaffold, links);
 }

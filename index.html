@@ -2,10 +2,6 @@
 layout: default
 ---
 
-
-
-<h1 class="page-heading">All Posts</h1>
-
 {% for post in paginator.posts %}
     <article class="post">
 
@@ -18,44 +14,43 @@ layout: default
     </article>
 {% endfor %}
 
-<ul>
-    <li class="">
-        {% if paginator.previous_page %}
-            <a class="" href="{{ paginator.previous_page_path }}">
-                <img src="{{ site.baseurl }}/img/previous.svg" alt="">
-            </a>
-        {% else %}
-            <span>
-                <img src="{{ site.baseurl }}/img/previous.svg" alt="">
-            </span>
-        {% endif %}
-    </li>
-
-    {% for page in (1..paginator.total_pages) %}
-        {% if page == paginator.page %}
-            <li>
-                <span >{{ page }}</span>
-            </li>
-        {% elsif page == 1 %}
-            <li>
-                <a href="/">{{ page }}</a>
-            </li>
-        {% else %}
-            <li>
-                <a href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}">{{ page }}</a>
-            </li>
-        {% endif %}
-    {% endfor %}
-
-    <li class="">
-        {% if paginator.next_page %}
-        <a class="" href="{{ paginator.next_page_path }}">
-            <img src="{{ site.baseurl }}/img/next.svg" alt="">
+<nav class="pagination flex">
+    {% if paginator.previous_page %}
+        <a class="flex align-center pagination__nav" href="{{ paginator.previous_page_path }}">
+            <svg class="pagination__icon"><use xlink:href="{{site.baseurl}}/img/sprite.svg#icon-previous"></use></svg>
         </a>
-        {% else %}
-        <span>
-            <img src="{{ site.baseurl }}/img/next.svg" alt="">
+    {% else %}
+        <span class="flex align-center">
+            <svg class="pagination__icon disabled"><use xlink:href="{{site.baseurl}}/img/sprite.svg#icon-previous"></use></svg>
         </span>
-        {% endif %}
-    </li>
-</ul>
+    {% endif %}
+
+    <ul class="pagination__num flex justify-center" flex>
+        {% for page in (1..paginator.total_pages) %}
+            {% if page == paginator.page %}
+                <li>
+                    <span >{{ page }}</span>
+                </li>
+            {% elsif page == 1 %}
+                <li>
+                    <a href="/">{{ page }}</a>
+                </li>
+            {% else %}
+                <li>
+                    <a href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}">{{ page }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+
+    {% if paginator.next_page %}
+        <a class="flex align-center pagination__nav" href="{{ paginator.next_page_path }}">
+            <svg class="pagination__icon"><use xlink:href="{{site.baseurl}}/img/sprite.svg#icon-next"></use></svg>
+        </a>
+    {% else %}
+        <span class="flex align-center">
+            <svg class="pagination__icon disabled"><use xlink:href="{{site.baseurl}}/img/sprite.svg#icon-next"></use></svg>
+        </span>
+    {% endif %}
+</nav>
