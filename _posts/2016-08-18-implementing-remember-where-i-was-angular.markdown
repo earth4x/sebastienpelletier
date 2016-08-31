@@ -6,4 +6,16 @@ permalink: /javascript/implementing-remember-where-i-was-angular/
 category: javascript
 ---
 
-This is a very simple post
+Imagine a user that logins through your application, works for a while, and then gets a session timeout. When he logs back in, wouldn't it be nice if he was automatically redirected to the page that he was in before he was kicked out?
+
+With that idea in mind, we will be discussing how to implement a 'Remember where I was' feature in AngularJS.
+
+# Preparation
+
+# Creating the service
+
+# Implementing the feature
+
+# Other ideas
+
+# Conclusion

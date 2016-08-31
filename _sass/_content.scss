@@ -43,6 +43,27 @@
 }
 
 
+table {
+    border-collapse: collapse;
+    border-spacing: none;
+    border: 1px solid brand(scaffold, alternate);
+
+    th {
+        background: brand(scaffold, links);
+        color: white;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+        border: 1px solid brand(scaffold, alternate);
+        padding: 0.4em 0.7em;
+        text-align: left;
+    }
+
+    td {
+        border: 1px solid brand(scaffold, alternate);
+        padding: 0.4em 0.7em;
+    }
+}
+
+
 
 
 // Pagination

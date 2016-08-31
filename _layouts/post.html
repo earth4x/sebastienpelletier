@@ -18,12 +18,9 @@ layout: default
         </span>
     </header>
     <section class="post__content">
-
         {{ content }}
     </section>
-    <div class="share">
-        <div class="addthis_sharing_toolbox"></div>
-    </div>
+
 </article>
 
 <aside class="similar">
@@ -36,7 +33,8 @@ layout: default
 </aside>
 
 <script>
-    var data = [{% for post in site.posts %}{
+    var data = [
+        {% for post in site.posts %}{
                 title: "{{ post.title }}",
                 date: '{{ post.date | date: "%B %-d, %Y" }}',
                 url: '{{ post.url | prepend: site.baseurl }}'
