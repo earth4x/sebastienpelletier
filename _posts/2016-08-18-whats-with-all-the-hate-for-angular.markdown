@@ -4,6 +4,7 @@ title:  "What's with all the hate for AngularJS recently?"
 date:   2016-08-18 09:15:04 -0400
 permalink: /javascript/whats-with-all-the-hate-for-angular/
 category: javascript
+published: false
 ---
 
 Seriously, I feel like recently there's been a smear campaign going on. Angular 1's performance is crap. Angular 2 is not going to take off and is complicated. ReactJS is the best thing ever !!!!! **#reactForever #AngularIsBad**
@@ -16,6 +17,7 @@ Talk about the history of Angular and when it was born. When React came out... w
 # React comes along
 
 # Angular 2, the answer to React?
+Even UI-Router, my favorite Angular 1.x plugin now has a ReactJS counterpart.
 
 # Conclusion
 Whether you use React, Vue, Ember, Angular 1, Angular 2... there are no wrong choices. Of course, some frameworks are more suited for specific things, and some frameworks will eventually be deprecated due to lack of new features and newer frameworks that come around, but that doesn't mean that a specific framework is better then the other.
