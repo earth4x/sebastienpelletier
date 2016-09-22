@@ -33,18 +33,19 @@ Dgeni is an extremely powerful documentation generator framework. It's built by 
 
 We use the following Dgeni packages:
 
-    NgDoc: Generates API references for anything that is part of JSDoc, with added support for directives, controllers, filters, services and providers.
-    Examples: Generates runnable examples. We use this to provide each component with a demonstration of its features, along with code to get people started with using the component.
+NgDoc: Generates API references for anything that is part of JSDoc, with added support for directives, controllers, filters, services and providers.
+Examples: Generates runnable examples. We use this to provide each component with a demonstration of its features, along with code to get people started with using the component.
 
 In addition, we created a custom "Schemas" package to document JSON contracts, component parameters and their connections. The package contains:
 
-    A file reader: Reads out TypeScript files and adds all the defined interfaces to the documentation index (using doc type "schema").
-    A processor: Parses the "schema" docs through the Typson JSON Schema generator.
-    A rendering filter: Connects documented @params (from directives and functions) with a schema doc if there is one with a matching name.
+- A file reader: Reads out TypeScript files and adds all the defined interfaces to the documentation index (using doc type "schema").
+- A processor: Parses the "schema" docs through the Typson JSON Schema generator.
+- A rendering filter: Connects documented @params (from directives and functions) with a schema doc if there is one with a matching name.
 
 The Dgeni framework resembles Angular in a lot of ways. The package interface, using Angular's injector on Node.js (of course), makes it very easy to create your own documentation generator based on your specific needs.
 
 Key concepts
+
 - Processors: Building blocks of documentation generation
 - Services: Singleton Helper Objects
 - Packages: Reusable Component Containers
@@ -79,6 +80,16 @@ npm i dgeni dgeni-packages canonical-path lodash --save-dev
 {% endhighlight %}
 
 ** Talk about using gulp... and make a comment about cleaning up the docs folder because Dgeni doesn't remove the partials (no cleaning) **
+
+First thing we are going to do is create a `docs` folder where we will have our configuration file, as well as the actual documentation. In this case, I opted to simply put it in the same directory, but you could package it in a `dist` folder if you want.
+
+Open your command line and create the following folders in the root folder of your application
+{% highlight shell %}
+mkdir docs
+cd docs
+mkdir config
+mkdir content
+{% endhighlight %}
 
 {% highlight javascript %}
 // Canonical path provides a consistent path (i.e. always forward slashes) across different OSes
