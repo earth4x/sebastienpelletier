@@ -61,6 +61,7 @@ We will need a couple of NodeJS packages for documenting our application:
 - LoDash (optional), JavaScript utility library
 
 We can easily install all of those dependencies using NPM:
+
 ````javascript
 npm i dgeni dgeni-packages canonical-path lodash --save-dev
 ````
@@ -72,6 +73,7 @@ First thing we are going to do is create a `docs` folder where we will have our 
 **SETUP GULP TASK**
 
 Create the following folder structure in the root folder of your application
+
 ````javascript
 ├── docs/
 │   ├── app/
