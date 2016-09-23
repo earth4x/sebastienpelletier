@@ -50,104 +50,126 @@ Having a up-to-date documentation will allow you to:
 - Have people understand your code clearly
 - Easily understand each other's code
 - Easily document business rules and complex algorythms
+- Document dependencies between modules and services
 
 ### Installing and Configuration
 
 We will need a couple of NodeJS packages for documenting our application:
-- Dgeni, desc
-- Dgeni Packages, desc
-- Canonical Path (optional), desc      the module is used to generate absolute paths for your source files:
-- LoDash (optional), desc
+- Dgeni, our documentation generator
+- Dgeni Packages, which are a collection of dgeni packages for generating documentation from source code.
+- Canonical Path (optional), used to generate absolute paths for your source files
+- LoDash (optional), JavaScript utility library
 
 We can easily install all of those dependencies using NPM:
-{% highlight shell %}
+````shell
 npm i dgeni dgeni-packages canonical-path lodash --save-dev
-{% endhighlight %}
+````
 
-** Talk about using gulp... and make a comment about cleaning up the docs folder because Dgeni doesn't remove the partials (no cleaning) **
+**Talk about using gulp... and make a comment about cleaning up the docs folder because Dgeni doesn't remove the partials (no cleaning)**
 
-First thing we are going to do is create a `docs` folder where we will have our configuration file, as well as the actual documentation. In this case, I opted to simply put it in the same directory, but you could package it in a `dist` folder if you want.
+First thing we are going to do is create a `docs` folder where we will have our configuration files, our static content as well as the actual documentation. In this case, I opted to simply put it in the same directory under `build`, but you could package it in a `dist` folder if you want.
 
-Open your command line and create the following folders in the root folder of your application
-{% highlight shell %}
-mkdir docs
-cd docs
-mkdir config
-mkdir content
-{% endhighlight %}
+**SETUP GULP TASK**
 
-{% highlight javascript %}
-// Canonical path provides a consistent path (i.e. always forward slashes) across different OSes
+Create the following folder structure in the root folder of your application
+````shell
+├── docs/
+│   ├── app/
+│   ├── config/
+│   │  ├── processors/
+│   │  ├── templates/
+│   │  ├── index.js
+│   ├── content/
+````
+
+Under `config`, we will be creating our configuration file (index.js) and we will also be adding our Processors and Templates. In the future you can also add Services and Tag Definitions (to parse your own custom tags)
+
+Under `content`, we will be adding our static documentation. Dgeni reads .ngdoc files by default and will convert them to HTML partials. They are just Markdown files, so if you are used to Markdown, everything will be familiar :)
+
+Now, let's open up `index.js`, and let's start configuring this beast !
+
+** Note if you are using an older LoDash version, keyBy is indexBy
+
+````javascript
+
 var path = require('canonical-path');
-
-var Package = require('dgeni').Package;
 var packagePath = __dirname;
 
-module.exports = new Package('cma-docs', [
-    require('dgeni-packages/jsdoc'),
+var Package = require('dgeni').Package;
+
+// Create and export a new Dgeni package
+// We will use Gulp later on to generate that package
+// Think of packages as containers, our 'myDoc' package contains other packages
+// which themselves include processors, services, templates...
+module.exports = new Package('myDoc', [
     require('dgeni-packages/ngdoc'),
     require('dgeni-packages/nunjucks')
 ])
+````
 
+Alright, so we've loaded Dgeni, our dgeni packages dependencies and created a new package for us to generate documentation. Next step, we will tell Dgeni which files we want to process and where to output them
 
-.config(function(dgeni, log, readFilesProcessor, templateFinder, writeFilesProcessor) {
+````javascript
+.config(function(dgeni, log, readFilesProcessor, writeFilesProcessor) {
 
     // Set the log level to 'info', switch to 'debug' when troubleshooting
     log.level = 'info';
 
     // Specify the base path used when resolving relative paths to source and output files
-    readFilesProcessor.basePath = path.resolve(packagePath, '..');
+    readFilesProcessor.basePath = path.resolve(packagePath, '../..');
 
-    // Specify collections of source files that should contain the documentation to extract
+    // Specify our source files that we want to extract
     readFilesProcessor.sourceFiles = [
-        { include: '../src/app/common/app.module.js', basePath: 'src' },
-        { include: 'content/**/*.ngdoc', basePath: 'content' }
+        { include: 'src/app/**/**/*.js', basePath: 'src/app' },
     ];
 
     // Use the writeFilesProcessor to specify the output folder for the extracted files
-    writeFilesProcessor.outputFolder = 'pages';
-
-    // Specify where the templates are located
-    templateFinder.templateFolders.unshift(path.resolve(packagePath, 'templates'));
+    writeFilesProcessor.outputFolder = 'docs/build';
 
 })
+````
 
-.config(function(computePathsProcessor, computeIdsProcessor) {
+Next, let's specify where are custom templates are located
+````javascript
+.config(function(templateFinder) {
+    // Specify where the templates are located
+    templateFinder.templateFolders.unshift(path.resolve(packagePath, 'templates'));
+})
+````
 
+Looks pretty simple so far? We are merely using the default Dgeni processors to specify how we want to process and then convert our source files. Next, let's setup how we want to convert the source files for each document type
+
+````javascript
+.config(function(computePathsProcessor) {
+
+    // Here we are defining our docType Module
+    //
+    // Each angular module will be extracted to it's own partial
+    // and will act as a container for the various Components, Controllers, Services in that Module
     computePathsProcessor.pathTemplates.push({
         docTypes: ['module'],
-        getPath: function(doc) { return doc.area + '/' + doc.name; },
-        outputPathTemplate: 'partials/${path}.html'
+        pathTemplate: '${area}/${name}',
+        outputPathTemplate: 'partials/${area}/${name}.html'
     });
 
-    computePathsProcessor.pathTemplates.push({
-        docTypes: ['overview'],
-        getPath: function(doc) {
-            var docPath = path.dirname(doc.fileInfo.relativePath);
-            if (doc.fileInfo.baseName !== 'index') {
-                docPath = path.join(docPath, doc.fileInfo.baseName);
-            } else {
-                return 'index';
-            }
-            return docPath;
-        },
-        outputPathTemplate: 'partials/${path}.html'
-    });
-
+    // Doing the same thing but for regular types like Services, Controllers, etc...
     computePathsProcessor.pathTemplates.push({
         docTypes: ['componentGroup'],
         pathTemplate: '${area}/${moduleName}/${groupType}',
         outputPathTemplate: 'partials/${area}/${moduleName}/${groupType}.html'
     });
 
-    computeIdsProcessor.idTemplates.push({
-        docTypes: ['overview'],
-        getId: function(doc) { return doc.fileInfo.baseName; },
-        getAliases: function(doc) { return [doc.id]; }
-    });
-
 })
-{% endhighlight %}
+````
+
+And... that's it! Although Dgeni as been lightly configured, if you we're to run a Gulp/Grunt task, you would immediately see something like this:
+
+![initial gulp task](img/dgeni/gulp-firstParse.png)
+
+Even though we haven't actually started documenting anything, we can see the Dgeni pipeline and how it's going through each different type of processors and performing various actions.
+
+
+
 
 ### Documenting your code
 
@@ -155,15 +177,42 @@ In the interest of time, I will actually be documenting an existing Angular 1.5 
 
 I'm using Todd Motto's (the owner of this blog) Angular 1.5 Component app as a living example. If you haven't had the time to check it out, do so... it's the best example of a .component() based application using UI-Router 1.0 beta using routed components.
 
-**LINK TO APP**
+[https://github.com/toddmotto/angular-1-5-components-app][dfa622d3]
+
+  [dfa622d3]: https://github.com/toddmotto/angular-1-5-components-app "angular component app"
+
+**Briefly show how adding JSDoc and NgDoc tags are going to get parsed... show Module, Service and Methods**
 
 ### Generating Documentation
 
-Using the Gulp task, looking at the partials folder
+Using the Gulp task, looking at the partials folder (screenshot)
+
+Looking at the partials folder is very boring. They are just plain HTML partials and are not very exciting. As mentioned at the beginning of this article, Dgeni doesn't provide a `wrapper` application to display the partials. It's up to each individual to present it how he/she wants.
+
+And we are going to do just that! We'll be wrapping up all of our documentation in a simple Angular application.
 
 ### How to improve
 
-Wrapping everything in an Angular App
+- Wrapping everything in an Angular App
+- Adding a new processor to generate an object containing all of our pages
+- Adding a new processor to generate an index page for our app
+- Modifying our config file to add these new processors
+
+````javascript
+// Adding our index page processor
+.processor(require('./processors/index-page'))
+
+// Adding our page-data processor
+.processor(require('./processors/pages-data'))
+````
+
+Then, we can add our static .ngdoc files to our source files
+````javascript
+readFilesProcessor.sourceFiles = [
+    { include: 'client/app/**/**/*.js', basePath: 'client/app' },
+    { include: 'docs/content/**/*.ngdoc', basePath: 'docs/content' } // newly added
+];
+````
 
 ### Adding static documents
 
