@@ -132,6 +132,7 @@ Alright, so we've loaded Dgeni, our dgeni packages dependencies and created a ne
 ````
 
 Next, let's specify where are custom templates are located
+
 ````javascript
 .config(function(templateFinder) {
     // Specify where the templates are located
@@ -209,6 +210,7 @@ And we are going to do just that! We'll be wrapping up all of our documentation 
 ````
 
 Then, we can add our static .ngdoc files to our source files
+
 ````javascript
 readFilesProcessor.sourceFiles = [
     { include: 'client/app/**/**/*.js', basePath: 'client/app' },
