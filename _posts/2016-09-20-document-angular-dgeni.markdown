@@ -15,56 +15,41 @@ Having worked on Enterprise-grade solutions, documentation is always an issue. I
 - <a href="#documenting-your-code">Documenting your code</a>
 - <a href="#generating-documentation">Generating documentation</a>
 - <a href="#how-to-improve">How to improve</a>
-- <a href="#adding-other-parts">Adding other parts</a>
+- <a href="#adding-static-documents">Adding static documents</a>
+- <a href="#limitations">Limitations</a>
 
 ### What's Dgeni
 
-Dgeni (pronounced Jenny) is a NodeJS documentation generation utility and it was created by the AngularJS team. The ideas behind Dgeni were to create a flexible and extensible documentation generator that would allow anyone to document their codebase.
+Dgeni (pronounced Jenny) is an extremely powerful NodeJS documentation generation utility. It was built by people from the Angular team, so it does make everything easy to document Angular projects although it can be used for other projects as well. The main feature of Dgeni is to convert your source files to documentation files. You can convert them to a full HTML page, partials, or something else.
+
+Dgeni does not provide a web application to display the output files, but it allows you to do what you want with it. It's up to the developer to decide what he wants to do with it. In this example we'll actually wrap our documentation in a simple Angular app.
 
 It has a modular core and offers multiple plugins (packages). You configure your base package using Processors and Services to customize how you want to generate your documentation.
 
-All of your documentation needs to be written in a form of JSDoc, which is a standard for Javascript documentation (although ESDoc is pickup up!), and is written inline in the source code. The various Dgeni Processors will then scan and convert your source files to documentation files. This also means that it supports many of the standard JSDoc directives, so if you are already writting JSDoc today, your work won't be lost :)
+All of your documentation needs to be written in a form of JSDoc, which is a standard for Javascript documentation (although ESDoc is picking up!), and is written inline in the source code. The various Dgeni Processors will then scan and convert your source files to documentation files. This also means that it supports many of the standard JSDoc directives, so if you are already writting JSDoc today, your work won't be lost :)
 
 **Briefly explain Dgeni pipeline and show the site with how it works.**
 
-The main feature of dgeni is to convert source code to some kind of document file. This could be a full HTML page, a partial HTML page, a markdown encoded text file or something else. Dgeni does not provide the wrapper web application to display these output files. That is up to the individual developer. That being said the long term aim is to provide a kind of container web app that could accept a standardized set of files output from dgeni.
-
-Dgeni is an extremely powerful documentation generator framework. It's built by people from the Angular team, particularly suitable for Angular projects but I've used it successfully for non-Angular projects as well.
-
-We use the following Dgeni packages:
-
-NgDoc: Generates API references for anything that is part of JSDoc, with added support for directives, controllers, filters, services and providers.
-Examples: Generates runnable examples. We use this to provide each component with a demonstration of its features, along with code to get people started with using the component.
-
-In addition, we created a custom "Schemas" package to document JSON contracts, component parameters and their connections. The package contains:
-
-- A file reader: Reads out TypeScript files and adds all the defined interfaces to the documentation index (using doc type "schema").
-- A processor: Parses the "schema" docs through the Typson JSON Schema generator.
-- A rendering filter: Connects documented @params (from directives and functions) with a schema doc if there is one with a matching name.
-
-The Dgeni framework resembles Angular in a lot of ways. The package interface, using Angular's injector on Node.js (of course), makes it very easy to create your own documentation generator based on your specific needs.
 
 Key concepts
 
-- Processors: Building blocks of documentation generation
-- Services: Singleton Helper Objects
+- Processors: Scan and convert source files, the building blocks of documentation generation
+- Services: Helper objects
 - Packages: Reusable Component Containers
 
 ### Why you should document your code
 
-The main things here are `Promise` and the `resolve` and `reject` arguments:
+There are many reasons why you should document your code, but we won't be getting into specifics in this article. The main reason I will evoke here is that it allows your code to be more concise and clear, and this is extremely important when you are working in a team environment.
 
-{% highlight javascript %}
-var js = new Date();
-{% endhighlight %}
+Working on large scale projects with multiple files, deadlines, employees leaving, code refactorings & rewrites, these things make it hard to keep track.
 
-We simply call `new Promise()` and inside can perform an asynchronous task, which may be for wrapping particular DOM events, or even wrapping third-party libraries that are not promise Objects.
+Having a up-to-date documentation will allow you to:
 
-For example, wrapping a pseudo third-party library called `myCallbackLib()` which gives us a success and error callback, we can construct a Promise around this to `resolve` and `reject` where appropriate:
-
-{% highlight javascript %}
-return text;
-{% endhighlight %}
+- Remember the code you wrote 6 months ago
+- Easily bring someone new into the project
+- Have people understand your code clearly
+- Easily understand each other's code
+- Easily document business rules and complex algorythms
 
 ### Installing and Configuration
 
@@ -174,34 +159,19 @@ I'm using Todd Motto's (the owner of this blog) Angular 1.5 Component app as a l
 
 ### Generating Documentation
 
-Using `$q.defer()` is just another flavour, and the original implementation, of `$q()` as a Promise constructor. Let's assume the following code, adapted from the before example using a service:
-
-{% highlight javascript %}
-return;
-{% endhighlight %}
+Using the Gulp task, looking at the partials folder
 
 ### How to improve
 
-Use `$q.when()` or `$q.resolve()` (they are identical, `$q.resolve()` is an alias for `$q.when()` to align with ES2015 Promise naming conventions) when you want to immediately resolve a promise from a non-promise Object, for example:
+Wrapping everything in an Angular App
 
-{% highlight javascript %}
-return;
-{% endhighlight %}
+### Adding static documents
 
-Note: `$q.when()` is also the same as `$q.resolve()`.
+Talk about how we can easily add markdown type files and add them to our app
 
-### Adding other parts
-
-Using `$q.reject()` will immediately reject a promise, this comes in handy for things such as HTTP Interceptors at the point of no return to return, so we can just return a rejected promise Object:
-
-{% highlight javascript %}
-return;
-{% endhighlight %}
+### Limitations
+Talk about how Controllers and Components cannot be documented correctly and how we could add our own processors to take care of it
 
 ### Conclusion
 
-Use `$q` for constructing promises from non-promise Objects/callbacks, and utilise `$q.all()` and `$q.race()` to work with existing promises.
-
-If you like this article, check out my advanced [Angular 1.5 master course](https://courses.toddmotto.com/products/ultimate-angularjs-master) which covers all the `$q`, `$httpProvider.interceptors`, `ui-router`, component architecture and the new `.component()` API.
-
-For anything else, [the $q documentation](https://docs.angularjs.org/api/ng/service/$q).
+How do we conclude???
