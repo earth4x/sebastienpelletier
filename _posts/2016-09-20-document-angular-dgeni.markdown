@@ -17,27 +17,13 @@ In this example I will show you how you can easily document your AngularJS appli
 - <a href="#create-folder-structure">2. Create folder structure</a>
 - <a href="#setup-configuration-file">3. Setup configuration file</a>
 - <a href="#creating-static-documentation">4. Creating static documentation</a>
-- <a href="#installing-and-configuration">5. Basic export to HTML partials</a>
-- <a href="#installing-and-configuration">6. Creating an Angular app to show the documentation</a>
-- <a href="#installing-and-configuration">7. Creating a processor for our Angular index page</a>
-- <a href="#installing-and-configuration">8. Generating a list of pages for our sidebar</a>
-- <a href="#installing-and-configuration">9. Documenting a Module, Controller, Directive and Service</a>
-- <a href="#installing-and-configuration">10. Compile and deploy</a>
-- <a href="#documenting-your-code">Documenting your code</a>
-- <a href="#generating-documentation">Generating documentation</a>
-- <a href="#how-to-improve">How to improve</a>
+- <a href="#basic-export-to-html-partials">5. Basic export to HTML partials</a>
+- <a href="#creating-an-angular-app-to-show-the-documentation">6. Creating an Angular app to show the documentation</a>
+- <a href="#creating-a-processor-for-our-angular-index-page">7. Creating a processor for our Angular index page</a>
+- <a href="#generating-a-list-of-pages-for-our-sidebar">8. Generating a list of pages for our sidebar</a>
+- <a href="#documenting-a-module-controller-directive-and-service">9. Documenting a Module, Controller, Directive and Service</a>
+- <a href="#compile-and-deploy">10. Compile and deploy</a>
 - <a href="#limitations">Limitations</a>
-
-Set this up as a tutorial so that people can follow along... Setup Angular's documentation generator for your Angular app in 10 steps
-
-People also like numbers, steps to follow - so by the end they can do it all themselves for their app. An example of "how" to actually document the app would also be *amazing*!
-Todd Motto
-
-Step 9) Documenting the app
-Now we need to go to some code examples and do this, this and this.
-Todd Motto
-
-Step 10) Final compile and deploy
 
 
 ### What's Dgeni
@@ -50,14 +36,6 @@ All of your documentation needs to be written in a form of JSDoc, which is a sta
 
 Dgeni does not provide a web application to display the output files, but it allows you to do what you want with it. It's up to the developer to decide and n this example we'll actually wrap our documentation in a simple Angular app.
 
-**Briefly explain Dgeni pipeline and show the site with how it works.**
-
-
-Key concepts
-
-- Processors: Scan and convert source files, the building blocks of documentation generation
-- Services: Helper objects
-- Packages: Reusable Component Containers
 
 ### Why you should document your code
 
@@ -96,11 +74,8 @@ npm i gulp -g
 ````
 
 ### 2. Create folder structure
-**Talk about using gulp... and make a comment about cleaning up the docs folder because Dgeni doesn't remove the partials (no cleaning)**
 
 First thing we are going to do is create a `docs` folder where we will have our configuration files, our static content as well as the actual documentation. In this case, I opted to simply put it in the same directory under `build`, but you could package it in a `dist` folder if you want.
-
-**SETUP GULP TASK**
 
 Create the following folder structure in the root folder of your application
 
@@ -119,12 +94,9 @@ Under `config`, we will be creating our configuration file (index.js) and we wil
 Under `content`, we will be adding our static documentation. Dgeni reads `.md` files by default (using the ngDocFileReader) and will convert them to HTML partials once it's setup correctly.
 
 ### 3. Setup configuration file
-Now, let's open up `index.js`, and let's start configuring this beast !
-
-** Note if you are using an older LoDash version, keyBy is indexBy
+Now, let's open up `/docs/config/index.js`, and let's start configuring this beast !
 
 ````javascript
-
 var path = require('canonical-path');
 var packagePath = __dirname;
 
@@ -143,7 +115,7 @@ module.exports = new Package('myDoc', [
 Alright, so we've loaded Dgeni, our dgeni packages dependencies and created a new package for us to generate documentation. Next step, we will tell Dgeni which files we want to process and where to output them
 
 ````javascript
-.config(function(dgeni, log, readFilesProcessor, writeFilesProcessor) {
+.config(function(log, readFilesProcessor, writeFilesProcessor) {
 
     // Set the log level to 'info', switch to 'debug' when troubleshooting
     log.level = 'info';
@@ -153,7 +125,7 @@ Alright, so we've loaded Dgeni, our dgeni packages dependencies and created a ne
 
     // Specify our source files that we want to extract
     readFilesProcessor.sourceFiles = [
-        { include: 'src/app/**/**/*.js', basePath: 'src/app' },
+        { include: 'src/app/**/**/*.js', basePath: 'src/app' }, // All of our application files
     ];
 
     // Use the writeFilesProcessor to specify the output folder for the extracted files
@@ -176,10 +148,11 @@ Looks pretty simple so far? We are merely using the default Dgeni processors to 
 ````javascript
 .config(function(computePathsProcessor) {
 
-    // Here we are defining our docType Module
+    // Here we are defining what to output for our docType Module
     //
     // Each angular module will be extracted to it's own partial
     // and will act as a container for the various Components, Controllers, Services in that Module
+    // We are basically specifying where we want the output files to be located
     computePathsProcessor.pathTemplates.push({
         docTypes: ['module'],
         pathTemplate: '${area}/${name}',
@@ -187,6 +160,8 @@ Looks pretty simple so far? We are merely using the default Dgeni processors to 
     });
 
     // Doing the same thing but for regular types like Services, Controllers, etc...
+    // By default they are grouped in a componentGroup and processed
+    // via the generateComponentGroupsProcessor internally in Dgeni
     computePathsProcessor.pathTemplates.push({
         docTypes: ['componentGroup'],
         pathTemplate: '${area}/${moduleName}/${groupType}',
@@ -211,27 +186,323 @@ Once you load the `dgeni-packages` module Dgeni is able to parse `@ngdoc` tags. 
 
 In this example we'll add a simple developer guide, just to show you how easy it is to had static documentation.
 
+Let's start out by creating these Markdown files
+
 ````javascript
-
-// create new processor for 'content' type doc
-// add 'overview' parsing to config file
-// add .ngdoc file for /api overview
-// add file for guide overview
-// add file for other guide content
-
+├── docs/
+│   ├── app/
+│   ├── config/
+│   ├── content/
+│   │  ├── api/
+│   │  │   ├── index.md
+│   │  ├── guide/
+│   │  │   ├── index.md
+│   │  │   ├── howTo.md
 ````
+
+Now that we've created those placeholders files and folders, let's write some content! Open up `guide/howTo.md` and type the following
+
+````markdown
+@ngdoc content
+@name How to write documentation
+@description
+
+# Lorem Ipsum
+Aenean ornare odio elit, eget facilisis ipsum molestie ac. Nam bibendum a nibh ut ullamcorper.
+Donec non felis gravida, rutrum ante mattis, sagittis urna. Sed quam quam, facilisis vel cursus at.
+
+## Foo
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin varius suscipit erat, non porta nunc molestie a.
+Nam blandit justo eget volutpat posuere. Etiam in ex fringilla, semper massa posuere, feugiat eros.
+
+## Bar
+Vestibulum vel tellus id felis lacinia tristique sollicitudin et lorem. Donec fermentum,
+velit nec fringilla consectetur, dolor nibh bibendum velit, sed porta augue eros ut enim.
+````
+
+You can also do the same in your other 2 pages, these will serve as the index pages for the `api` and `guide` pages of our documentation app. You can also add other folders and other Markdown files if you like, Dgeni will parse the files the same way as the others and generate HTML partials. The `api` folder (and section) is where your code-generated documentation will be located, Dgeni uses that folder by default.
+
+Now that we've added static content, we need to tell Dgeni where that content is located, and setup the computePathsProcessor so we can output the content to HTML partials. Let's do this now!
+
+First, let's add the Markdown files to the sourceFiles list:
+
+````javascript
+// Remember the sourceFiles section we added earlier? Let's now add our .md file to the list !
+readFilesProcessor.sourceFiles = [
+    { include: 'src/app/**/**/*.js', basePath: 'src/app' }, // All of our application files
+
+    // Our static Markdown documents
+    // We are specifying the path and telling Dgeni to use the ngdocFileReader
+    // to parse the Markdown files to HTMLs
+    { include: 'docs/content/**/*.md', basePath: 'docs/content', fileReader: 'ngdocFileReader' }
+];
+````
+
+Now, let's setup the computePathsProcessor to output the files to HTML partials:
+
+
+````javascript
+// create new compute for 'content' type doc
+computeIdsProcessor.idTemplates.push({
+    docTypes: ['content'],
+    getId: function(doc) { return doc.fileInfo.baseName; },
+    getAliases: function(doc) { return [doc.id]; }
+});
+
+// Document this part a little bit more?
+
+// Build custom paths and set the outputPaths for "content" pages
+computePathsProcessor.pathTemplates.push({
+    docTypes: ['content'],
+    getPath: function(doc) {
+        var docPath = path.dirname(doc.fileInfo.relativePath);
+        if (doc.fileInfo.baseName !== 'index') {
+            docPath = path.join(docPath, doc.fileInfo.baseName);
+        }
+        return docPath;
+    },
+    outputPathTemplate: 'partials/${path}.html'
+});
+````
+
 
 ### 5. Basic export to HTML partials
 
+Now that most of the configuration is done, we'll create a Gulp task to generate the documentation. Open up your `gulpfile.js` and add the following
+
 ````javascript
+var Dgeni = require('dgeni');
 
-// Setup a gulp task
-// Run the generate command
-// Show 'boring' result
+gulp.task('dgeni', function() {
 
+    // Notice how we are specifying which config to use
+    // This will import the index.js from the /docs/config folder and will use that
+    // configuration file while generating the documentation
+    var dgeni = new Dgeni([require('./docs/config')]);
+
+    // Using the dgeni.generate() method
+    return dgeni.generate();
+});
 ````
 
-### Documenting your code
+Now we can open up the command line, navigate to your project folder and run the Gulp task we wrote above.
+
+````javascript
+gulp dgeni
+````
+
+This should be the output:
+
+````javascript
+[11:06:17] Starting 'dgeni'...
+info:    running processor: readFilesProcessor
+info:    running processor: extractJSDocCommentsProcessor
+info:    running processor: parseTagsProcessor
+info:    running processor: filterNgDocsProcessor
+info:    running processor: extractTagsProcessor
+info:    running processor: codeNameProcessor
+info:    running processor: computeIdsProcessor
+info:    running processor: memberDocsProcessor
+info:    running processor: moduleDocsProcessor
+info:    running processor: generateComponentGroupsProcessor
+info:    running processor: providerDocsProcessor
+info:    running processor: collectKnownIssuesProcessor
+info:    running processor: computePathsProcessor
+info:    running processor: renderDocsProcessor
+info:    running processor: unescapeCommentsProcessor
+info:    running processor: inlineTagProcessor
+info:    running processor: writeFilesProcessor
+info:    running processor: checkAnchorLinksProcessor
+[11:06:18] Finished 'dgeni' after 732 ms
+````
+
+If you open up the `docs/build` folder you should see the exported HTML partials... but isn't this a little bit boring? They are just plain HTML partials and are not very exciting. We have all these files, but nothing to showcase them! As mentioned previously, Dgeni doesn't come with an application to show the output files, the developer is free to use what he/she wants.
+
+And we are going to do just that! We'll be wrapping up all of our documentation in a simple Angular application.
+
+**One thing to note is that Dgeni doesn't remove the partials while generating the docs. I advise you add another task that will clean up the `/build` folder before it generates the documentation.**
+
+### 6. Creating an Angular app to show the documentation
+
+Now let's create the Angular app that will house and show our HTML partials. Our app will be pretty simple and will only contain:
+
+- Root app module (app.module.js)
+- Root app config (app.config.js)
+- Docs Controller (docs.js)
+- Index view (index.html)
+- Bootstrap (for quick styling purposes)
+
+Create `app.module.js` and `app.config.js` under `/docs/app` and add the following.
+
+````javascript
+// app.module.js
+// Creating the root app module
+angular
+    .module('docs', []);
+
+// app.config.js
+// HTML5Mode to true, adding that config block to our root app module
+angular
+    .module('docs')
+    .config(config);
+
+function config($locationProvider) {
+
+    $locationProvider.html5Mode(true).hashPrefix('!');
+
+}
+config.$inject = ["$locationProvider"];
+````
+
+We'll get back to the Controller later on, so for now create `docs.js` and insert the following placeholder code
+
+````javascript
+angular
+    .module('docs')
+    .controller('DocsController', DocsController);
+
+function DocsController() {
+
+    var ctrl = this;
+
+    // Controller definition
+
+}
+
+DocsController.$inject = [""];
+````
+
+Alright, moving on, we now need to create our index template. Create `indexPage.template.html` under `/docs/config/template`:
+
+````html
+<!doctype html>
+<html ng-app="docs" ng-controller="DocsController as ctrl">
+    <head>
+        <base href="/">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Documentation</title>
+
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    </head>
+    <body>
+
+
+        <nav class="navbar navbar-default">
+            <div class="container">
+
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Documentation</a>
+                </div>
+
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">API</a></li>
+                    <li><a href="#">Guide</a></li>
+                </ul>
+
+            </div>
+        </nav>
+
+
+        <div class="container">
+
+            <div class="row">
+
+                <div class="col-sm-8">
+
+                    <!-- Doc content will go here -->
+
+                </div>
+
+                <div class="col-sm-3 offset-sm-1">
+
+                    <h4>Contents</h4>
+
+                    <!-- Pages for current section -->
+                    <ol class="list-unstyled">
+                        <li><a href="#"></a></li>
+                    </ol>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- vendors -->
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+
+        <!-- angular app -->
+        <script src="src/app.module.js"></script>
+        <script src="src/app.config.js"></script>
+        <script src="src/docs.js"></script>
+
+        <!-- page data -->
+        <script src="src/pages-data.js"></script>
+        <script src="src/nav-data.js"></script>
+    </body>
+</html>
+````
+
+We could just add that index file directly in `/app`, but we're actually going to generate the page using a processor we will create ourselves. Dgeni will then run the processor and output our index template.
+
+### 7. Creating a processor for our Angular index page
+
+Now, let's configure Dgeni to compile our index page. Create `index-page.js` under `/docs/config/processors`
+
+````javascript
+module.exports = function indexPageProcessor() {
+    return {
+        $runAfter: ['adding-extra-docs'],
+        $runBefore: ['extra-docs-added'],
+        $process: process
+    };
+
+    function process(docs) {
+
+        // Document what this does? pushes to the docs obj the props
+        docs.push({
+            docType: 'indexPage',
+            template: 'indexPage.template.html',
+            outputPath: 'index.html',
+            path: 'index.html',
+            id: 'index'
+        });
+
+    }
+};
+````
+
+Then, we need to tell Dgeni about this new processor! Let's add it in our config file
+
+````javascript
+// /docs/config/index.js
+.processor(require('./processors/index-page'))
+````
+
+If we run the Gulp task we defined earlier, you'll see this processor added to the pipeline
+
+````javascript
+info:    running processor: indexPageProcessor
+````
+
+And if you look into your `build` folder, you'll see the processed index.html! That might seem like an unnecessary step, but Dgeni can output all the files we need to display our documentation app in the folder of our choosing. That means that we don't need an external process to copy the index file.
+
+### 8. Generating a list of pages for our sidebar
+
+````javascript
+// Create ng constant templates
+// Create pages processor
+// Add the processor to the pipeline
+// Go in NG app and add them to index page
+// Go in NG Controller and add constants
+// Loop in view
+````
+
+
+### 9. Documenting a Module, Controller, Directive and Service
 
 In the interest of time, I will actually be documenting an existing Angular 1.5 app.
 
@@ -241,39 +512,17 @@ I'm using Todd Motto's (the owner of this blog) Angular 1.5 Component app as a l
 
   [dfa622d3]: https://github.com/toddmotto/angular-1-5-components-app "angular component app"
 
-**Briefly show how adding JSDoc and NgDoc tags are going to get parsed... show Module, Service and Methods**
-
-### Generating Documentation
-
-Using the Gulp task, looking at the partials folder (screenshot)
-
-Looking at the partials folder is very boring. They are just plain HTML partials and are not very exciting. As mentioned at the beginning of this article, Dgeni doesn't provide a `wrapper` application to display the partials. It's up to each individual to present it how he/she wants.
-
-And we are going to do just that! We'll be wrapping up all of our documentation in a simple Angular application.
-
-### How to improve
-
-- Wrapping everything in an Angular App
-- Adding a new processor to generate an object containing all of our pages
-- Adding a new processor to generate an index page for our app
-- Modifying our config file to add these new processors
-
 ````javascript
-// Adding our index page processor
-.processor(require('./processors/index-page'))
-
-// Adding our page-data processor
-.processor(require('./processors/pages-data'))
+// Briefly show how adding JSDoc and NgDoc tags are going to get parsed... show Module, Service and Methods**
 ````
 
-Then, we can add our static .ngdoc files to our source files
+### 10. Compile and deploy
 
 ````javascript
-readFilesProcessor.sourceFiles = [
-    { include: 'client/app/**/**/*.js', basePath: 'client/app' },
-    { include: 'docs/content/**/*.ngdoc', basePath: 'docs/content' } // newly added
-];
+// Necessary step? maybe split page processor and angular stuff
+// Should we talk about copy, concat and minify angular stuff here?
 ````
+
 
 
 ### Limitations
