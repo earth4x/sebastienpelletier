@@ -26,7 +26,7 @@ In this example I will show you how you can easily document your AngularJS appli
 - <a href="#limitations">Limitations</a>
 
 
-### What's Dgeni
+## What's Dgeni
 
 Dgeni (pronounced Jenny) is an extremely powerful NodeJS documentation generation utility. It was built by people from the Angular team, so it does make everything easy to document Angular projects although it can be used for other projects as well. AngularJS, Ionic Framework, Protractor and Angular Material are currently using Dgeni in production to generate their documentation.
 
@@ -37,7 +37,7 @@ All of your documentation needs to be written in a form of JSDoc, which is a sta
 Dgeni does not provide a web application to display the output files, but it allows you to do what you want with it. It's up to the developer to decide and n this example we'll actually wrap our documentation in a simple Angular app.
 
 
-### Why you should document your code
+## Why you should document your code
 
 There are many reasons why you should document your code, but we won't be getting into specifics in this article. The main reason I will evoke here is that it allows your code to be more concise and clear, and this is extremely important when you are working in a team environment.
 
@@ -51,7 +51,7 @@ Having a up-to-date documentation will allow you to:
 - Document business rules and complex algorythms
 - Document dependencies between modules and services
 
-### 1. Installing NPM dependencies
+## 1. Installing NPM dependencies
 
 We will need a couple of NodeJS packages for documenting our application:
 - Dgeni, our documentation generator
@@ -73,7 +73,7 @@ If you are not using Gulp or Grunt in your project, install it globally as this 
 npm i gulp -g
 ````
 
-### 2. Create folder structure
+## 2. Create folder structure
 
 First thing we are going to do is create a `docs` folder where we will have our configuration files, our static content as well as the actual documentation. In this case, I opted to simply put it in the same directory under `build`, but you could package it in a `dist` folder if you want.
 
@@ -93,7 +93,7 @@ Under `config`, we will be creating our configuration file (index.js) and we wil
 
 Under `content`, we will be adding our static documentation. Dgeni reads `.md` files by default (using the ngDocFileReader) and will convert them to HTML partials once it's setup correctly.
 
-### 3. Setup configuration file
+## 3. Setup configuration file
 Now, let's open up `/docs/config/index.js`, and let's start configuring this beast !
 
 ````javascript
@@ -114,6 +114,7 @@ module.exports = new Package('myDoc', [
 
 Alright, so we've loaded Dgeni, our dgeni packages dependencies and created a new package for us to generate documentation. Next step, we will tell Dgeni which files we want to process and where to output them
 
+### Setup the file reading and writing
 ````javascript
 .config(function(log, readFilesProcessor, writeFilesProcessor) {
 
@@ -134,6 +135,7 @@ Alright, so we've loaded Dgeni, our dgeni packages dependencies and created a ne
 })
 ````
 
+### Setup the templates
 Next, let's specify where are custom templates are located
 
 ````javascript
@@ -145,6 +147,7 @@ Next, let's specify where are custom templates are located
 
 Looks pretty simple so far? We are merely using the default Dgeni processors to specify how we want to process and then convert our source files. Next, let's setup how we want to convert the source files for each document type
 
+### Setup the Dgeni processors
 ````javascript
 .config(function(computePathsProcessor) {
 
@@ -171,14 +174,11 @@ Looks pretty simple so far? We are merely using the default Dgeni processors to 
 })
 ````
 
-And... that's it! Although Dgeni as been lightly configured, if you we're to run a Gulp/Grunt task, you would immediately see something like this:
+And... that's it! Although Dgeni as been lightly configured, if you we're to run a Gulp/Grunt task, and even though we haven't actually started documenting anything, we can see the Dgeni pipeline and how it's going through each different type of processors and performing various actions.
 
-![initial gulp task](img/dgeni/gulp-firstParse.png)
+But we'll discuss about setup for generating code later on, now's let's talk about creating static documentation.
 
-Even though we haven't actually started documenting anything, we can see the Dgeni pipeline and how it's going through each different type of processors and performing various actions.
-
-
-### 4. Creating static documentation
+## 4. Creating static documentation
 
 You may be wondering, Why would I want to do static documentation? Well, you may want to document other things besides the code. You may have a Developer guide, REST API References, Tutorials, Notes, Information regarding Unit & E2E tests, libraries behind used in the project... basically anything you can think of!
 
@@ -222,6 +222,7 @@ velit nec fringilla consectetur, dolor nibh bibendum velit, sed porta augue eros
 
 You can also do the same in your other 2 pages, these will serve as the index pages for the `api` and `guide` pages of our documentation app. You can also add other folders and other Markdown files if you like, Dgeni will parse the files the same way as the others and generate HTML partials. The `api` folder (and section) is where your code-generated documentation will be located, Dgeni uses that folder by default.
 
+### Adding our static content to Dgeni
 Now that we've added static content, we need to tell Dgeni where that content is located, and setup the computePathsProcessor so we can output the content to HTML partials. Let's do this now!
 
 First, let's add the Markdown files to the sourceFiles list:
@@ -243,8 +244,9 @@ Now, let's setup the computePathsProcessor to output the files to HTML partials:
 
 ````javascript
 // create new compute for 'content' type doc
+// indexPage is something new we will be defining later
 computeIdsProcessor.idTemplates.push({
-    docTypes: ['content'],
+    docTypes: ['content', 'indexPage'],
     getId: function(doc) { return doc.fileInfo.baseName; },
     getAliases: function(doc) { return [doc.id]; }
 });
@@ -264,9 +266,18 @@ computePathsProcessor.pathTemplates.push({
     outputPathTemplate: 'partials/${path}.html'
 });
 ````
+## Create the content template
+We also need to create a template for our document of type `content` else Dgeni will throw an exception. Let's create a `content.template.html` file under `/docs/config/templates` and include the following
 
+{% raw %}
+````handlebars
+{% block content %}
+    {$ doc.description | marked $}
+{% endblock %}
+````
+{% endraw %}
 
-### 5. Basic export to HTML partials
+## 5. Basic export to HTML partials
 
 Now that most of the configuration is done, we'll create a Gulp task to generate the documentation. Open up your `gulpfile.js` and add the following
 
@@ -322,23 +333,28 @@ And we are going to do just that! We'll be wrapping up all of our documentation 
 
 **One thing to note is that Dgeni doesn't remove the partials while generating the docs. I advise you add another task that will clean up the `/build` folder before it generates the documentation.**
 
-### 6. Creating an Angular app to show the documentation
+## 6. Creating an Angular app to show the documentation
 
 Now let's create the Angular app that will house and show our HTML partials. Our app will be pretty simple and will only contain:
 
 - Root app module (app.module.js)
-- Root app config (app.config.js)
-- Docs Controller (docs.js)
+- Root app config & state definitions (app.config.js)
+- Api Controller (api.js)
+- Guide Controller (guide.js)
 - Index view (index.html)
 - Bootstrap (for quick styling purposes)
+- Angular and UI-Router (multiple ui-views)
 
+### Creating our Angular app files
 Create `app.module.js` and `app.config.js` under `/docs/app` and add the following.
 
 ````javascript
 // app.module.js
 // Creating the root app module
 angular
-    .module('docs', []);
+    .module('docs', [
+        'ui.router'
+    ]);
 
 // app.config.js
 // HTML5Mode to true, adding that config block to our root app module
@@ -348,7 +364,10 @@ angular
 
 function config($locationProvider) {
 
-    $locationProvider.html5Mode(true).hashPrefix('!');
+    // Set HTML5 Mode
+    $locationProvider.html5Mode(true);
+
+    // Later on we will define our states
 
 }
 config.$inject = ["$locationProvider"];
@@ -357,21 +376,31 @@ config.$inject = ["$locationProvider"];
 We'll get back to the Controller later on, so for now create `docs.js` and insert the following placeholder code
 
 ````javascript
+// api.js
 angular
     .module('docs')
-    .controller('DocsController', DocsController);
+    .controller('ApiController', ApiController);
 
-function DocsController() {
+function ApiController() {
 
     var ctrl = this;
 
-    // Controller definition
+}
+ApiController.$inject = [""];
+
+// guide.js
+angular
+    .module('docs')
+    .controller('GuideController', GuideController);
+
+function GuideController() {
+
+    var ctrl = this;
 
 }
-
-DocsController.$inject = [""];
+GuideController.$inject = [""];
 ````
-
+### Creating our index page
 Alright, moving on, we now need to create our index template. Create `indexPage.template.html` under `/docs/config/template`:
 
 ````html
@@ -410,22 +439,8 @@ Alright, moving on, we now need to create our index template. Create `indexPage.
 
             <div class="row">
 
-                <div class="col-sm-8">
-
-                    <!-- Doc content will go here -->
-
-                </div>
-
-                <div class="col-sm-3 offset-sm-1">
-
-                    <h4>Contents</h4>
-
-                    <!-- Pages for current section -->
-                    <ol class="list-unstyled">
-                        <li><a href="#"></a></li>
-                    </ol>
-
-                </div>
+                <div class="col-sm-8" ui-view="main"></div>
+                <div class="col-sm-3 offset-sm-1" ui-view="sidebar"></div>
 
             </div>
 
@@ -433,22 +448,24 @@ Alright, moving on, we now need to create our index template. Create `indexPage.
 
         <!-- vendors -->
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+        <script src="//cdn.rawgit.com/angular-ui/ui-router/0.2.18/release/angular-ui-router.js"></script>
 
         <!-- angular app -->
         <script src="src/app.module.js"></script>
         <script src="src/app.config.js"></script>
-        <script src="src/docs.js"></script>
+        <script src="src/api.js"></script>
+        <script src="src/guide.js"></script>
 
         <!-- page data -->
-        <script src="src/pages-data.js"></script>
-        <script src="src/nav-data.js"></script>
+        <script src="src/api-data.js"></script>
+        <script src="src/guide-data.js"></script>
     </body>
 </html>
 ````
 
 We could just add that index file directly in `/app`, but we're actually going to generate the page using a processor we will create ourselves. Dgeni will then run the processor and output our index template.
 
-### 7. Creating a processor for our Angular index page
+## 7. Creating a processor for our Angular index page
 
 Now, let's configure Dgeni to compile our index page. Create `index-page.js` under `/docs/config/processors`
 
@@ -475,6 +492,7 @@ module.exports = function indexPageProcessor() {
 };
 ````
 
+### Adding the index page processor to the pipeline
 Then, we need to tell Dgeni about this new processor! Let's add it in our config file
 
 ````javascript
@@ -490,44 +508,396 @@ info:    running processor: indexPageProcessor
 
 And if you look into your `build` folder, you'll see the processed index.html! That might seem like an unnecessary step, but Dgeni can output all the files we need to display our documentation app in the folder of our choosing. That means that we don't need an external process to copy the index file.
 
-### 8. Generating a list of pages for our sidebar
+## 8. Generating a list of pages for our sidebar
+
+Now, we will need to tell Angular about all of our HTML partials. First, let's create a javascript template so that our processors can write data to it. Create `constant.data.template.js` under the `templates` folder.
 
 ````javascript
-// Create ng constant templates
-// Create pages processor
-// Add the processor to the pipeline
-// Go in NG app and add them to index page
-// Go in NG Controller and add constants
-// Loop in view
+angular
+    // Injecting into our app module
+    .module('docs')
+
+    // Creating an Angular constant and rendering a list of items as JSON
+    .constant('{$ doc.name $}', {$ doc.items | json $});
+````
+
+We've created a template, now we need Dgeni that grab all of our partials and store that information in our constants. For that we need to create new processors, let's start with the processor for the API pages.
+
+### Creating the 'API' processor
+````javascript
+// processors/api-data.js
+
+var _ = require('lodash');
+
+// Creating a generic method to assign all of our
+// data more easily (including subpages)
+function buildDocData(doc, extraData) {
+    return _.assign({
+        name: doc.name,
+        type: doc.docType,
+        outputPath: doc.outputPath,
+        url: doc.path,
+    }, extraData);
+}
+
+module.exports = function apiPagesProcessor(moduleMap) {
+
+    // Defining when the processor will run, and it's process
+    return {
+        $runAfter: ['paths-computed'],
+        $runBefore: ['rendering-docs'],
+        $process: process
+    };
+
+    // Our process method definition
+    // Getting all docs as a parameter
+    function process(docs) {
+
+        var apiPages = _(docs)
+
+            // Filtering our all the docs that are not in a module
+            // and the ones that are componentGroups
+            .filter(function(doc) {
+                return doc.docType !== 'componentGroup';
+            })
+
+            // Filtering and grouping by Module
+            .filter('module')
+            .groupBy('module')
+
+            // Map of our Module Docs
+            .map(function(moduleDocs, moduleName) {
+
+                var moduleDoc = _.find(docs, {
+                    docType: 'module',
+                    name: moduleName
+                });
+
+                // Making sure we don't get any exceptions when the module is undefined
+                if (!moduleDoc) return;
+
+                // Calling back to our generic method to build the object
+                return buildDocData(moduleDoc, {
+                    docs: moduleDocs
+
+                    .filter(function(doc) {
+                        return doc.docType !== 'module';
+                    })
+
+                    .map(buildDocData)
+                });
+
+            })
+
+            // Removing null items
+            .filter()
+
+            // Get the value
+            .value();
+
+        // After all the processing is done, we push the changes to docs
+        // Note here that we are using our constant template defined earlier
+        // Name and Items are parsed with the template
+        docs.push({
+            name: 'API_DATA',
+            template: 'constant-data.template.js',
+            outputPath: 'src/api-data.js',
+            items: apiPages
+        });
+    }
+};
+
+````
+
+### Creating the 'Guide' processor
+We also need to do the same for the Guide pages, althought it's a much simpler processor.
+
+````javascript
+// processors/guide-data.js
+
+var _ = require('lodash');
+
+// Once again, simple generic method to assign all our data
+function buildDocData(doc) {
+    return _.assign({
+        name: doc.name,
+        type: doc.docType,
+        outputPath: doc.outputPath,
+        url: doc.path,
+    });
+}
+
+module.exports = function guidePagesProcessor(moduleMap) {
+
+    return {
+        $runAfter: ['paths-computed'],
+        $runBefore: ['rendering-docs'],
+        $process: process
+    };
+
+    function process(docs) {
+
+        // Filtering out to get only 'content' types and
+        // only the ones under the 'guide' module
+        var guides = _(docs).filter(function(doc) {
+          return doc.docType === 'content' && doc.module === 'guide';
+        })
+
+        // Sort them via the path, you could also add a sortOrder param
+        .sortBy(function(page) {
+            return page.path;
+        })
+
+        // Mapping them with our generic method
+        .map(buildDocData)
+
+        // Get the value
+        .value();
+
+        // Using the same constant template but using a different
+        // name and file path
+        docs.push({
+            name: 'GUIDE_DATA',
+            template: 'constant-data.template.js',
+            outputPath: 'src/guide-data.js',
+            items: guides
+        });
+    }
+};
+
+````
+
+### Adding the processors
+Now, we need to add those 2 processors to the Dgeni pipeline in the config file
+
+````javascript
+// /docs/config/index.js
+
+// Already existed
+.processor(require('./processors/index-page'))
+
+// Let's add our API and Guide processors
+.processor(require('./processors/guide-data'))
+.processor(require('./processors/api-data'))
 ````
 
 
-### 9. Documenting a Module, Controller, Directive and Service
+At this point it might be a good time to try running our `gulp dgeni` command to make sure everything is working properly and we don't have any errors.
+
+````javascript
+[13:15:25] Starting 'dgeni'...
+info:    running processor: readFilesProcessor
+info:    running processor: extractJSDocCommentsProcessor
+info:    running processor: parseTagsProcessor
+info:    running processor: filterNgDocsProcessor
+info:    running processor: extractTagsProcessor
+info:    running processor: codeNameProcessor
+info:    running processor: indexPageProcessor // our processor for the index page
+info:    running processor: computeIdsProcessor
+info:    running processor: memberDocsProcessor
+info:    running processor: moduleDocsProcessor
+info:    running processor: generateComponentGroupsProcessor
+info:    running processor: providerDocsProcessor
+info:    running processor: collectKnownIssuesProcessor
+info:    running processor: computePathsProcessor
+info:    running processor: guidePagesProcessor // our processor for the guide pages
+info:    running processor: apiPagesProcessor // our processor for the api pages
+info:    running processor: renderDocsProcessor
+info:    running processor: unescapeCommentsProcessor
+info:    running processor: inlineTagProcessor
+info:    running processor: writeFilesProcessor
+info:    running processor: checkAnchorLinksProcessor
+````
+
+### Add the data into our Angular app
+Let's go back to our Angular app and modify the following files. We are adding our newly generated constants and binding the data directly to the view.
+````javascript
+// app/api.js
+function ApiController(API_DATA) {
+    var ctrl = this;
+    ctrl.allPages = API_DATA;
+}
+ApiController.$inject = ["API_DATA"];
+
+// app/guide.js
+function GuideController(GUIDE_DATA) {
+    var ctrl = this;
+    ctrl.allPages = GUIDE_DATA;
+}
+GuideController.$inject = ["GUIDE_DATA"];
+````
+
+### Creating our application states
+We also need to create states so that our Angular app can be navigated. Let's do just that! As you will notice, it creates alot of code for 1 file, so it's a good idea to split the routing into separate files for each section. For the case of simplicity, I opted to put all the state definitions in a single file.
+````javascript
+// app.config.js
+function config($locationProvider, $stateProvider, API_DATA, GUIDE_DATA, $urlRouterProvider) {
+
+    // Set HTML5 Mode
+    $locationProvider.html5Mode(true);
+
+    // Configure URL Router to redirect to /api
+    // if state doesn't exist
+    $urlRouterProvider.otherwise('/api');
+
+    // Defining our template for the sidebar
+    // Could've been in a partial, but it's simple
+    // enough that it can be a string template
+    var sidebarTemplate = '<h4>Contents</h4>' +
+        '<ol class="list-unstyled">' +
+        '<li ng-repeat="page in ctrl.allPages">' +
+        '<a href="{{page.url}}">{{page.name}}</a>' +
+        '<ol class="list-unstyled" style="padding-left: 15px;">' +
+        '<li ng-repeat="child in page.docs">' +
+        '<a href="{{child.url}}">{{child.name}}</a>' +
+        '</li>' +
+        '</ol>' +
+        '</li>' +
+        '</ol>';
+
+    // Assign our root state for API pages to var
+    // Assigning the basepage as the partials
+    // Setup the sidebar to use our ApiController and template
+    var apiState = {
+        name: 'api',
+        url: '/api',
+        views: {
+            'main': {
+                templateUrl: 'partials/api.html',
+            },
+            'sidebar': {
+                template: sidebarTemplate,
+                controller: 'ApiController as ctrl',
+            }
+        }
+    }
+
+    // Same thing for our guide page
+    var guideState = {
+        name: 'guide',
+        url: '/guide',
+        views: {
+            'main': {
+                templateUrl: 'partials/guide.html'
+            },
+            'sidebar': {
+                template: sidebarTemplate,
+                controller: 'GuideController as ctrl',
+            }
+        }
+    }
+
+    // Using the $stateProvider from UI-Router
+    // to create the states in the application
+    $stateProvider.state(apiState);
+    $stateProvider.state(guideState);
+
+    // Looping through all of our API pages
+    // and dynamically creating new states based
+    // on the data generated by Dgeni
+    angular.forEach(API_DATA, function(parent) {
+
+        var newState = {
+            name: parent.name,
+            url: '/' + parent.url,
+            views: {
+                'main': {
+                    templateUrl: parent.outputPath
+                },
+                'sidebar': {
+                    template: sidebarTemplate,
+                    controller: 'ApiController as ctrl'
+                }
+            }
+        };
+
+        // Creating the states using $stateProvider
+        $stateProvider.state(newState);
+
+        // In the case of API, we have multiple modules and each
+        // of them have children, so we are doing the same thing
+        // here but for the child states
+        angular.forEach(parent.docs, function(doc) {
+
+            var newState = {
+                name: doc.name,
+                url: '/' + doc.url,
+                views: {
+                    'main': {
+                        templateUrl: doc.outputPath
+                    },
+                    'sidebar': {
+                        template: sidebarTemplate,
+                        controller: 'ApiController as ctrl'
+                    }
+                }
+            };
+
+            // Creating the states using $stateProvider
+            $stateProvider.state(newState);
+        });
+    });
+
+    // Same thing for Guide, except in this case we only
+    // have 'root' pages, so no need to loop twice
+    angular.forEach(GUIDE_DATA, function(parent) {
+
+        var newState = {
+            name: parent.name,
+            url: '/' + parent.url,
+            views: {
+                'main': {
+                    templateUrl: parent.outputPath
+                },
+                'sidebar': {
+                    template: sidebarTemplate,
+                    controller: 'GuideController as ctrl'
+                }
+            }
+        };
+
+        // Creating the states using $stateProvider
+        $stateProvider.state(newState);
+
+    });
+
+}
+config.$inject = ["$locationProvider", "$stateProvider", "API_DATA", "GUIDE_DATA", "$urlRouterProvider"];
+````
+
+
+## 9. Documenting a Module, Controller, Directive and Service
 
 In the interest of time, I will actually be documenting an existing Angular 1.5 app.
 
-I'm using Todd Motto's (the owner of this blog) Angular 1.5 Component app as a living example. If you haven't had the time to check it out, do so... it's the best example of a .component() based application using UI-Router 1.0 beta using routed components.
+I'm using Todd Motto's (the owner of this blog) [Angular 1.5 Component app][dfa622d3] as a living example. If you haven't had the time to check it out, do so... it's the best example of a .component() based application using UI-Router 1.0 beta using routed components.
 
-[https://github.com/toddmotto/angular-1-5-components-app][dfa622d3]
+The examples from this guide are also available directly in the app, under `/docs`. So feel free to fork the app to see it in action, and learn about how you should be building Angular apps in 2016 at the same time!
 
-  [dfa622d3]: https://github.com/toddmotto/angular-1-5-components-app "angular component app"
+[dfa622d3]: https://github.com/toddmotto/angular-1-5-components-app "Angular 1.5 Component app"
 
+### Documenting a Module
+### Documenting a Controller
+### Documenting a Directive
+### Documenting a Service
 ````javascript
 // Briefly show how adding JSDoc and NgDoc tags are going to get parsed... show Module, Service and Methods**
 ````
 
-### 10. Compile and deploy
+## 10. Compile and deploy
 
 ````javascript
-// Necessary step? maybe split page processor and angular stuff
-// Should we talk about copy, concat and minify angular stuff here?
+// Talk about copy to docs (app files)
+// clean up the docs build folder (as mentionned earlier)
+// concat and minify angular is also a good option
+// Talk about using something like lite-server since middleware implemented and no setup required
 ````
 
 
 
-### Limitations
+## Limitations
 Talk about how Controllers and Components cannot be documented correctly and how we could add our own processors to take care of it
 
-### Conclusion
+## Conclusion
 
 How do we conclude???
