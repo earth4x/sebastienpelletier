@@ -711,6 +711,7 @@ info:    running processor: checkAnchorLinksProcessor
 
 ### Add the data into our Angular app
 Let's go back to our Angular app and modify the following files. We are adding our newly generated constants and binding the data directly to the view.
+
 ````javascript
 // app/api.js
 function ApiController(API_DATA) {
@@ -729,6 +730,7 @@ GuideController.$inject = ["GUIDE_DATA"];
 
 ### Creating our application states
 We also need to create states so that our Angular app can be navigated. Let's do just that! As you will notice, it creates alot of code for 1 file, so it's a good idea to split the routing into separate files for each section. For the case of simplicity, I opted to put all the state definitions in a single file.
+
 ````javascript
 // app.config.js
 function config($locationProvider, $stateProvider, API_DATA, GUIDE_DATA, $urlRouterProvider) {
@@ -880,6 +882,7 @@ The examples from this guide are also available directly in the app, under `/doc
 ### Documenting a Controller
 ### Documenting a Directive
 ### Documenting a Service
+
 ````javascript
 // Briefly show how adding JSDoc and NgDoc tags are going to get parsed... show Module, Service and Methods**
 ````
