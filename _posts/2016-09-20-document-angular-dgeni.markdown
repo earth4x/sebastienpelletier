@@ -5,7 +5,7 @@ title: Documenting your Angular app using Dgeni in 10 easy steps
 path: 2016-09-20-document-angular-dgeni.md
 ---
 
-**The following is a guest post by [@sebastpelletier][7489a839].**
+**The following is a guest post by [@sebastpelletier][7489a839]. Don't hate on me, as my hair styling techniques are not as good as Todd's ;)**
 
   [7489a839]: https://twitter.com/sebastpelletier "@sebastpelletier"
 
