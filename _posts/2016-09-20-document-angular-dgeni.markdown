@@ -5,6 +5,10 @@ title: Documenting your Angular app using Dgeni in 10 easy steps
 path: 2016-09-20-document-angular-dgeni.md
 ---
 
+**The following is a guest post by [@sebastpelletier][7489a839].**
+
+  [7489a839]: https://twitter.com/sebastpelletier "@sebastpelletier"
+
 Having worked on Enterprise-grade solutions, documentation is always an issue. It's either outdated, deprecated or worse, there's no documentation! Generating documentation of your Angular application is easy using Dgeni, which is ironically not well documented for a documentation generator.
 
 In this example I will show you how you can easily document your AngularJS application using Dgeni, and then output that documentation into a separate application!
@@ -1021,4 +1025,6 @@ As previously mentioned, Controllers and Components have no tags associated with
 
 Also, Dgeni doesn't have alot of documentation and/or tutorials, which makes it hard to learn. It was pretty much the basis of this post, not alot of people seem to know about Dgeni and I wanted to blog about it, so that others can learn :)
 
-Otherwise, I think Dgeni is a really powerful tool to document your Javascript application. If only more people were using it!
+Otherwise, I think Dgeni is a really powerful tool to document your Javascript application. Wrapping your code in an Angular app is one way of doing things, but there are so many possibilities. For example, Protractor is exporting all their docs to markdown files and importing them in the Jekyll website.
+
+That's the real power of Dgeni, developer freedom. If only more people were using it!
