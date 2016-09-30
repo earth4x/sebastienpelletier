@@ -1,7 +1,7 @@
 ---
 layout: post
 permalink: /documenting-angular-dgeni
-title: Documenting your Angular app using Dgeni
+title: Documenting your Angular app using Dgeni in 10 easy steps
 path: 2016-09-20-document-angular-dgeni.md
 ---
 
@@ -23,7 +23,7 @@ In this example I will show you how you can easily document your AngularJS appli
 - <a href="#generating-a-list-of-pages-for-our-sidebar">8. Generating a list of pages for our sidebar</a>
 - <a href="#documenting-a-module-controller-directive-and-service">9. Documenting a Module, Controller, Directive and Service</a>
 - <a href="#compile-and-deploy">10. Compile and deploy</a>
-- <a href="#limitations">Limitations</a>
+- <a href="#conclusion">Conclusion</a>
 
 
 ## What's Dgeni
@@ -373,7 +373,7 @@ function config($locationProvider) {
 config.$inject = ["$locationProvider"];
 ````
 
-We'll get back to the Controller later on, so for now create `docs.js` and insert the following placeholder code
+We'll get back to the Controller later on, so for now create `api.js` and `guide.js` and insert the following placeholder code
 
 ````javascript
 // api.js
@@ -532,8 +532,18 @@ var _ = require('lodash');
 // Creating a generic method to assign all of our
 // data more easily (including subpages)
 function buildDocData(doc, extraData) {
+
+    // So that we can create states even though our module names contain dots(.)
+    // in UI-Router dotted notation means it's a child state, so this is problematic
+    // if we are following Angular styleguides and conventions regarding
+    // naming of our Modules
+    // #hack #lazy
+    var splitName = doc.name.split('.');
+    doc.stateName = _.camelCase(splitName);
+
     return _.assign({
         name: doc.name,
+        stateName: doc.stateName,
         type: doc.docType,
         outputPath: doc.outputPath,
         url: doc.path,
@@ -879,28 +889,136 @@ The examples from this guide are also available directly in the app, under `/doc
 [dfa622d3]: https://github.com/toddmotto/angular-1-5-components-app "Angular 1.5 Component app"
 
 ### Documenting a Module
-### Documenting a Controller
-### Documenting a Directive
-### Documenting a Service
 
 ````javascript
-// Briefly show how adding JSDoc and NgDoc tags are going to get parsed... show Module, Service and Methods**
+/**
+ *
+ * @ngdoc module
+ * @name components.contact
+ *
+ * @requires ui.router
+ *
+ * @description
+ *
+ * This is the contact module. It includes all of our components for the contact feature.
+ * ## This also parses down Markdown
+ *
+ * - So you can add lists
+ * - List 2
+ *
+ * ###And regular paragraph and headlines
+ *
+ **/
 ````
+
+### Documenting a Method
+Notice how we are appending the name of the Controller (or constructor in which the method is contained) to the name so it gets linked. `@param` and `@return` are actually JSDoc methods!
+
+````javascript
+/**
+ * @ngdoc method
+ * @name ContactEditController#updateContact
+ *
+ * @param {event} event Receive the emitted event
+ * Updates the contact information
+ *
+ * @return {method} ContactService returns the updateContact method and a promise
+ */
+````
+
+### Documenting a Service
+Adding the `@module` JSDoc tag allows Dgeni to understand in which module that Service is located.
+
+````javascript
+/**
+ * @ngdoc service
+ * @name ContactService
+ * @module components.contact
+ *
+ * @description Provides HTTP methods for our firebase connection.
+ *
+ * ## Lorem Ipsum 1
+ * Aenean ornare odio elit, eget facilisis ipsum molestie ac. Nam bibendum a nibh ut ullamcorper.
+ * Donec non felis gravida, rutrum ante mattis, sagittis urna. Sed quam quam, facilisis vel cursus at.
+ *
+ * ## Lorem Ipsum 2
+ * Aenean ornare odio elit, eget facilisis ipsum molestie ac. Nam bibendum a nibh ut ullamcorper.
+ * Donec non felis gravida, rutrum ante mattis, sagittis urna. Sed quam quam, facilisis vel cursus at.
+ */
+````
+
+### Documenting a Controller
+Controllers are a bit annoying to test because there's no way to parse controllers in ngDoc. When you look at the Dgeni project, they recommend using the `type` tag when describing a Constructor, and since Controllers are Contructors, it makes sense to use it. Also notice that we are also referencing our `@module` so they can be linked.
+
+````javascript
+/**
+ * @ngdoc type
+ * @module components.contact
+ * @name ContactEditController
+ *
+ * @description
+ *
+ * ## Lorem Ipsum 1
+ * Aenean ornare odio elit, eget facilisis ipsum molestie ac. Nam bibendum a nibh ut ullamcorper.
+ * Donec non felis gravida, rutrum ante mattis, sagittis urna. Sed quam quam, facilisis vel cursus at.
+ *
+ * ## Lorem Ipsum 2
+ * Aenean ornare odio elit, eget facilisis ipsum molestie ac. Nam bibendum a nibh ut ullamcorper.
+ * Donec non felis gravida, rutrum ante mattis, sagittis urna. Sed quam quam, facilisis vel cursus at.
+ */
+````
+
+### Documenting a Directive / Component
+Just like Controllers, they isn't a way to specify a type `component` using ngDoc. To be fair, the component method is still fairly new, so that's not a surprise. What we can do is use the `directive` type and specify it's a component somewhere in our name / description
+
+````javascript
+/**
+ * @ngdoc directive
+ * @name lengthCheck
+ * @module components.contact
+ *
+ * @description
+ *
+ * Aenean ornare odio elit, eget facilisis ipsum molestie ac. Nam bibendum a nibh ut ullamcorper.
+ * Donec non felis gravida, rutrum ante mattis, sagittis urna. Sed quam quam, facilisis vel cursus at.
+ *
+ * @usage
+ *
+ * ### How to use
+ * Aenean ornare odio elit, eget facilisis ipsum molestie ac. Nam bibendum a nibh ut ullamcorper.
+ * Donec non felis gravida, rutrum ante mattis, sagittis urna. Sed quam quam, facilisis vel cursus at.
+ **/
+````
+
+For more information on how to use all the available tags, you can look at [AngularJS - How to write documentation][ffe819ce]
+
+  [ffe819ce]: https://github.com/angular/angular.js/wiki/Writing-AngularJS-Documentation "AngularJS - How to write documentation"
 
 ## 10. Compile and deploy
 
+Now that we've got our app up and running, and we started documenting some code, we can generate our documentation once again to see how it behaves. But... how can we look at our app? We need a server !
+
+### Setting up a simple server
+I recommend installing John Papa's [lite-server][7d5be9d1] because it's a zero-configuration & SPA-friendly server. It configures BrowserSync with a middleware so you can refresh your app and it will redirect everything to index.html (and let Angular handle the routing).
+
+You can install it globally, go directly into the `build` folder and run it (it runs from the current folder by default)
+
 ````javascript
-// Talk about copy to docs (app files)
-// clean up the docs build folder (as mentionned earlier)
-// concat and minify angular is also a good option
-// Talk about using something like lite-server since middleware implemented and no setup required
+npm i lite-server -g
+cd docs
+cd build
+lite-server
 ````
 
+Now, as soon as you run the server you will notice the app is not working and that's because we never copied our application files into our `src` directory. You could be running the application with the files directly in the `app` folder, but I recommend you use Gulp (or the build tool you are using) to concatenate, minify and package your files into the `src` folder.
 
+You can also integrate it with your current process and package everything into your `dist` folder.
 
-## Limitations
-Talk about how Controllers and Components cannot be documented correctly and how we could add our own processors to take care of it
+  [7d5be9d1]: https://github.com/johnpapa/lite-server "lite-server"
 
 ## Conclusion
+As previously mentioned, Controllers and Components have no tags associated with them, so we do have to use some tricks up our sleeves to document those elements correctly. We could also add our own processors so we can parse specific types, just like we did for our `content` types for our static documentation.
 
-How do we conclude???
+Also, Dgeni doesn't have alot of documentation and/or tutorials, which makes it hard to learn. It was pretty much the basis of this post, not alot of people seem to know about Dgeni and I wanted to blog about it, so that others can learn :)
+
+Otherwise, I think Dgeni is a really powerful tool to document your Javascript application. If only more people were using it!
